@@ -24,6 +24,9 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Debug - List files after build
+        run: ls -R
+
       - name: Deploy to Netlify
         id: netlify_deploy
         run: |
@@ -34,19 +37,32 @@ jobs:
             --prod \
             --json \
                 > deploy_output.json
+          cat deploy_output.json
+
       - name: Generate URL Preview
         id: url_preview
         run: |
-            NETLIFY_PREVIEW_URL=$(jq -r '.deploy_url' deploy_output.json)
-            echo "NETLIFY_PREVIEW_URL=$NETLIFY_PREVIEW_URL" >> "$GITHUB_OUTPUT"
-            echo "Preview URL: $NETLIFY_PREVIEW_URL" >> README.md
+          NETLIFY_PREVIEW_URL=$(jq -r '.deploy_url' deploy_output.json)
+          echo "NETLIFY_PREVIEW_URL=$NETLIFY_PREVIEW_URL" >> "$GITHUB_OUTPUT"
+          echo "Preview URL: $NETLIFY_PREVIEW_URL" >> README.md
+          cat README.md
 
-      - name: Commit and push test status
-        env:
-            GH_PAT: ${{ secrets.GH_PAT }}
+      - name: Debug - Print repository and branch
         run: |
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            
-            git add .
-            git diff --staged --quiet || (git commit -m "Update test status badge" && git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:$(git rev-parse --abbrev-ref HEAD))
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
+
+      - name: Commit and push README.md
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update README with Netlify preview URL"
+            git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:$(git rev-parse --abbrev-ref HEAD)
+          fi
