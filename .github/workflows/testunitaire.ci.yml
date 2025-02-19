@@ -1,6 +1,13 @@
 name: Run Unit Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "test-status.svg"
+  pull_request:
+
 
 jobs: 
   test:
