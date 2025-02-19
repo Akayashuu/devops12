@@ -19,7 +19,7 @@ jobs:
           - name: Create test result badge
             if: always()
             run: |
-              TEST_RESULT=$(npm test -- --json | jq -r '.stats.failures')
+              TEST_RESULT=$(npm test -- --reporter=json | jq -r '.stats.failures')
               if [ "$TEST_RESULT" -eq 0 ]; then
                 BADGE_COLOR=brightgreen
                 BADGE_LABEL=passing
