@@ -11,3 +11,4 @@ Ce projet est destiné à valider les connaissances en DevOps des élèves de 3�
 4. Implémentez une github action pour déployer automatiquement le site sur un hebergement gratuit (Netlify)
 
 ## Test Results
+Preview URL: https://67b59c5b5d8158241c7c3d76--devops12.netlify.app
