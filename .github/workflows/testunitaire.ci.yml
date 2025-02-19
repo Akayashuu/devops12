@@ -16,25 +16,20 @@ jobs:
             run: npm install
           - name: Run unit tests
             run: npm test
-          - name: Create test result badge
-            if: always()
-            run: |
-              TEST_RESULT=$(npm test -- --reporter=json | jq -r '.stats.failures')
-              if [ "$TEST_RESULT" -eq 0 ]; then
-                BADGE_COLOR=brightgreen
-                BADGE_LABEL=passing
-              else
-                BADGE_COLOR=red
-                BADGE_LABEL=failing
-              fi
-              curl -o test-badge.svg "https://img.shields.io/badge/tests-$BADGE_LABEL-$BADGE_COLOR"
-              mv test-badge.svg ./test-badge.svg
-          - name: Update README with badge
-            run: |
-              sed -i '/!\[Test Status\]/d' README.md
-              echo '![Test Status](./test-badge.svg)' >> README.md
-          - name: Commit and push badge
-            uses: stefanzweifel/git-auto-commit-action@v4
+          - name: Upload test results
+            if: success()
+            uses: actions/upload-artifact@v2
             with:
-              commit_message: Update test result badge
-              file_pattern: README.md test-badge.svg
+                  name: test-results
+                  path: test-results
+          - name: Create test status badge
+            run: |
+              if [ ${{ job.status }} == 'success' ]; then
+                echo "![Tests](https://img.shields.io/badge/tests-passing-brightgreen)" > test-status.md
+              else
+                echo "![Tests](https://img.shields.io/badge/tests-failing-red)" > test-status.md
+          - name: Upload test status badge
+            uses: actions/upload-artifact@v2
+            with:
+                name: test-status
+                path: test-status.md
