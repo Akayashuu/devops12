@@ -1,4 +1,3 @@
-[Workflows](https://github.com/Akayashuu/devops12/actions/workflows/WORKFLOW-FILE/badge.svg)
 # DevOps Project
 
 Ce projet est destiné à valider les connaissances en DevOps des élèves de 3ème année d'informatique.
