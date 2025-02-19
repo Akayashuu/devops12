@@ -1,37 +1,33 @@
-name: Deploy to Netlify
+name: Deploy website
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: [push]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Repository Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
+          cache: "npm"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Netlify
+        run: npm install netlify-cli@17.10.1 -g
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Build project
         run: npm run build
 
       - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v2
-        with:
-          publish-dir: "./dist"  # Remplace par le dossier de build de ton projet (ex: "build" pour React, "dist" pour Vue/Nuxt)
-          production-branch: main
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "🚀 Auto-deploy depuis GitHub Actions"
-          alias: preview-${{ github.run_number }}
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        id: netlify_deploy
+        run: |
+          netlify deploy \
+            --dir dist \
+            --site ${{ secrets.NETLIFY_SITE_ID }} \
+            --auth ${{ secrets.NETLIFY_API_TOKEN }}
