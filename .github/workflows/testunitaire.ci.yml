@@ -25,12 +25,12 @@ jobs:
 
       - name: Create test status badge
         run: |
+          rm -f test-status.svg  # Supprime le fichier existant pour éviter un conflit
           if [ "${{ steps.test.outcome }}" == "success" ]; then
-            curl -o test-status.svg https://img.shields.io/badge/tests-passing-brightgreen
+          curl -o test-status.svg https://img.shields.io/badge/tests-passing-brightgreen
           else
-            curl -o test-status.svg https://img.shields.io/badge/tests-failing-red
+          curl -o test-status.svg https://img.shields.io/badge/tests-failing-red
           fi
-
       - name: Commit and push test status
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
