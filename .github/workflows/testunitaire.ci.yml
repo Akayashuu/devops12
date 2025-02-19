@@ -1,0 +1,40 @@
+name: Run Unit Tests
+
+on: [push, pull_request]
+
+jobs: 
+    test:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v2
+          - name: Set up Node.js
+            uses: actions/setup-node@v2
+            with:
+                node-version: '20'
+          - name: Install dependencies
+            run: npm install
+          - name: Run unit tests
+            run: npm test
+          - name: Create test result badge
+            if: always()
+            run: |
+              TEST_RESULT=$(npm test -- --json | jq -r '.stats.failures')
+              if [ "$TEST_RESULT" -eq 0 ]; then
+                BADGE_COLOR=brightgreen
+                BADGE_LABEL=passing
+              else
+                BADGE_COLOR=red
+                BADGE_LABEL=failing
+              fi
+              curl -o test-badge.svg "https://img.shields.io/badge/tests-$BADGE_LABEL-$BADGE_COLOR"
+              mv test-badge.svg ./test-badge.svg
+          - name: Update README with badge
+            run: |
+              sed -i '/!\[Test Status\]/d' README.md
+              echo '![Test Status](./test-badge.svg)' >> README.md
+          - name: Commit and push badge
+            uses: stefanzweifel/git-auto-commit-action@v4
+            with:
+              commit_message: Update test result badge
+              file_pattern: README.md test-badge.svg
