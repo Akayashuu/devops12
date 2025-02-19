@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          persist-credentials: true # Assure que les credentials sont disponibles pour push
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -40,8 +42,10 @@ jobs:
             echo "![Tests](https://img.shields.io/badge/tests-failing-red)" > test-status.md
           fi
 
-      - name: Upload test status badge
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-status
-          path: test-status.md
+      - name: Commit and push test status
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add test-status.md
+          git commit -m "Update test status badge"
+          git push
