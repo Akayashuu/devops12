@@ -25,18 +25,18 @@ jobs:
 
       - name: Create test status badge
         run: |
-          rm -f test-status.svg  # Supprime le fichier existant pour éviter un conflit
           if [ "${{ steps.test.outcome }}" == "success" ]; then
-          curl -o test-status.svg https://img.shields.io/badge/tests-passing-brightgreen
+            curl -o test-status.svg https://img.shields.io/badge/tests-passing-brightgreen
           else
-          curl -o test-status.svg https://img.shields.io/badge/tests-failing-red
+            curl -o test-status.svg https://img.shields.io/badge/tests-failing-red
           fi
+
       - name: Commit and push test status
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+            GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add test-status.svg
-          git commit -m "Update test status badge"
-          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:$(git rev-parse --abbrev-ref HEAD)
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            
+            git add test-status.svg
+            git diff --staged --quiet || (git commit -m "Update test status badge" && git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:$(git rev-parse --abbrev-ref HEAD))
