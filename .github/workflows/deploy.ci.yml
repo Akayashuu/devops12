@@ -45,9 +45,16 @@ jobs:
         id: url_preview
         run: |
           NETLIFY_PREVIEW_URL=$(jq -r '.deploy_url' deploy_output.json)
-          echo "NETLIFY_PREVIEW_URL=$NETLIFY_PREVIEW_URL" >> "$GITHUB_OUTPUT"
-          echo "Preview URL: $NETLIFY_PREVIEW_URL" >> README.md
+          
+          # Remplace l'ancienne URL dans le README.md
+          if grep -q "Preview URL:" README.md; then
+            sed -i "s|Preview URL: .*|Preview URL: $NETLIFY_PREVIEW_URL|" README.md
+          else
+            echo "Preview URL: $NETLIFY_PREVIEW_URL" >> README.md
+          fi
+          
           cat README.md
+
 
       - name: Debug - Print repository and branch
         run: |
