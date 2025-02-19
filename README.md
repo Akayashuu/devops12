@@ -13,3 +13,4 @@ Ce projet est destiné à valider les connaissances en DevOps des élèves de 3�
 ## Test Results
 Preview URL: https://67b59ac96719cad2dd1cb87f--devops12.netlify.app
 Preview URL: https://67b59afa719b87e88f26952f--devops12.netlify.app
+Preview URL: https://67b59b1e652311f6ceb295d6--devops12.netlify.app
