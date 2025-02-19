@@ -65,6 +65,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "Update README with Netlify preview URL"
+            git commit -m "Update README with Netlify preview URL [skip ci]"
             git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:$(git rev-parse --abbrev-ref HEAD)
           fi
