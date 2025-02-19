@@ -15,3 +15,4 @@ Preview URL: https://67b59ac96719cad2dd1cb87f--devops12.netlify.app
 Preview URL: https://67b59afa719b87e88f26952f--devops12.netlify.app
 Preview URL: https://67b59b1e652311f6ceb295d6--devops12.netlify.app
 Preview URL: https://67b59b499c7ef730fb8e581c--devops12.netlify.app
+Preview URL: https://67b59b77da11c5e8ebd426ed--devops12.netlify.app
